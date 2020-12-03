@@ -24,8 +24,8 @@ fn push_components(
 #[async_trait]
 pub trait Destiny2 {
     async fn get_destiny_manifest(&self) -> Result<Response<DestinyManifest>, Error>;
-    async fn search_destiny_player(&self, membership_type: MembershipType, name: &str) -> Result<Response<DestinyManifest>, Error>;
-    async fn equip_item(&self, destiny_item_action_request: DestinyItemActionRequest) -> Result<Response<DestinyManifest>, Error>;
+    async fn search_destiny_player(&self, membership_type: MembershipType, name: &str) -> Result<Response<Vec<UserInfoCard>>, Error>;
+    async fn equip_item(&self, destiny_item_action_request: DestinyItemActionRequest) -> Result<Response<i32>, Error>;
     async fn get_character(&self, membership_type: MembershipType, destiny_membership_id: &str, character_id: i64, components: Vec<DestinyComponentType>) -> Result<Response<DestinyCharacterResponse>, Error>;
     async fn get_item(&self, membership_type: MembershipType, destiny_membership_id: &str, item_instance_id: i64, components: Vec<DestinyComponentType>) -> Result<Response<DestinyItemResponse>, Error>;
     async fn get_profile(&self, membership_type: MembershipType, destiny_membership_id: &str, components: Vec<DestinyComponentType>) -> Result<Response<DestinyProfileResponse>, Error>;
@@ -34,15 +34,15 @@ pub trait Destiny2 {
 #[async_trait]
 impl Destiny2 for BungieClient {
     async fn get_destiny_manifest(&self) -> Result<Response<DestinyManifest>, Error> {
-        self.send_request("/Destiny2/Manifest", None).await
+        self.send_request("/Destiny2/Manifest/", None).await
     }
 
-    async fn search_destiny_player(&self, membership_type: MembershipType, name: &str) -> Result<Response<DestinyManifest>, Error> {
-        let path = &format!("/Destiny2/SearchDestinyPlayer/{}/{}", membership_type as i64, name);
+    async fn search_destiny_player(&self, membership_type: MembershipType, name: &str) -> Result<Response<Vec<UserInfoCard>>, Error> {
+        let path = &format!("/Destiny2/SearchDestinyPlayer/{}/{}/", membership_type as i64, name);
         self.send_request(path, None).await
     }
 
-    async fn equip_item(&self, destiny_item_action_request: DestinyItemActionRequest) -> Result<Response<DestinyManifest>, Error> {
+    async fn equip_item(&self, destiny_item_action_request: DestinyItemActionRequest) -> Result<Response<i32>, Error> {
         self.send_request("/Destiny2/Actions/Items/EquipItem", Some(serde_json::to_string(&destiny_item_action_request)?)).await
     }
 

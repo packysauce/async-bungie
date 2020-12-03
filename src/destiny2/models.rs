@@ -300,7 +300,13 @@ pub struct UserInfoCard {
     #[serde(rename = "membershipId")]
     pub membership_id: String,
     #[serde(rename = "displayName")]
-    pub display_name: String
+    pub display_name: String,
+    #[serde(rename = "crossSaveOverride")]
+    pub cross_save_override: Option<i32>,
+    #[serde(rename = "applicableMembershipTypes")]
+    pub applicable_membership_types: Option<i32>,
+    #[serde(rename = "isPublic")]
+    pub is_public: Option<bool>
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -860,7 +866,9 @@ enum_number!(MembershipType {
     None = 0,
     TigerXbox = 1,
     TigerPsn = 2,
+    TigerSteam = 3,
     TigerBlizzard = 4,
+    TigerStadia = 5,
     TigerDemon = 10,
     BungieNext = 254,
     All = -1,

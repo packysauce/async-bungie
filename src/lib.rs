@@ -1,5 +1,6 @@
-use anyhow::Error;
-use reqwest::{header::AUTHORIZATION, Client};
+use anyhow::{Context, Error, anyhow};
+use surf::http::headers::AUTHORIZATION;
+use surf::middleware::Redirect;
 use serde::de::DeserializeOwned;
 
 #[macro_use]
@@ -31,7 +32,7 @@ impl BungieClient {
         path: &str,
         body: Option<String>,
     ) -> Result<T, Error> {
-        let client = Client::new();
+        let client = surf::client();
         let path = [urls::API, path].join("/");
 
         let mut req = body
@@ -42,7 +43,8 @@ impl BungieClient {
             req = req.header(AUTHORIZATION, oauth_token);
         }
 
-        let response = req.send().await?;
-        Ok(response.json().await?)
+        req.recv_json().await
+            .map_err(|e| anyhow!(e))
+            .with_context(|| "failed to receive json")
     }
 }
