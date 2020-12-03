@@ -4,6 +4,7 @@ use serde::de::DeserializeOwned;
 
 #[macro_use]
 mod macros;
+pub mod urls;
 pub mod destiny2;
 pub use destiny2::Destiny2;
 
@@ -31,7 +32,7 @@ impl BungieClient {
         body: Option<String>,
     ) -> Result<T, Error> {
         let client = Client::new();
-        let path = "https://www.bungie.net/Platform".to_owned() + path;
+        let path = [urls::API, path].join("/");
 
         let mut req = body
             .map_or_else(|| client.get(&path), |body| client.post(&path).body(body))
