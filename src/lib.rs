@@ -1,8 +1,3 @@
-extern crate reqwest;
-extern crate serde_json;
-#[macro_use]
-extern crate hyper;
-
 use anyhow::Error;
 use reqwest::{header::AUTHORIZATION, Client};
 use serde::de::DeserializeOwned;
